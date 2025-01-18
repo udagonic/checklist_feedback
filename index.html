@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フィードバックチェックリスト</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: 'M PLUS Rounded 1c', sans-serif; /* 丸ゴシック体 */
+            background-color: #f8f9fa; /* 薄い背景色 */
+            color: #333; /* 濃いめの文字色 */
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #007bff; /* 青系の見出し色 */
+        }
+        .form-check-input:checked {
+            background-color: #28a745; /* 緑系のチェック色 */
+            border-color: #28a745;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+        .list-group-item {
+            border-color: #dee2e6;
+            background-color: #fff;
+        }
+        .list-group-item.checked {
+            color: #28a745; /* チェック済み項目の緑色 */
+        }
+        /* Google FontsのM PLUS Rounded 1cを読み込む */
+        @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap');
+        .container {
+            max-width: 800px; /* コンテナの最大幅を設定 */
+        }
+        .form-check {
+            margin-bottom: 10px; /* チェックボックス間の余白 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="text-center mb-4">フィードバックチェックリスト</h1>
+
+        <form id="checklistForm">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="item1" value="・内容は適切か。" id="item1">
+                <label class="form-check-label" for="item1">・内容は適切か。</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="item2" value="・出典は明示されているか。" id="item2">
+                <label class="form-check-label" for="item2">・出典は明示されているか。</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="item3" value="・自身の考えが述べられているか。" id="item3">
+                <label class="form-check-label" for="item3">・自身の考えが述べられているか。</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="item4" value="・複数回提出しなおしているか。" id="item4">
+                <label class="form-check-label" for="item4">・複数回提出しなおしているか。</label>
+            </div>
+            <button type="button" class="btn btn-primary mt-3 w-100" onclick="showResults()">結果表示</button>
+        </form>
+
+        <h2 class="mt-4">結果</h2>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h3>当てはまっているもの</h3>
+                <ul class="list-group" id="checkedList"></ul>
+            </div>
+            <div class="col-md-6">
+                <h3>当てはまっていないもの</h3>
+                <ul class="list-group" id="uncheckedList"></ul>
+            </div>
+        </div>
+        <button type="button" class="btn btn-secondary mt-3 w-100" id="copyButton" onclick="copyResults()">結果をコピー</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+        function showResults() {
+            const form = document.getElementById("checklistForm");
+            const checkedList = document.getElementById("checkedList");
+            const uncheckedList = document.getElementById("uncheckedList");
+
+            checkedList.innerHTML = "";
+            uncheckedList.innerHTML = "";
+
+            const checkedItems = [];
+            const uncheckedItems = [];
+
+            for (let i = 0; i < form.elements.length; i++) {
+                const element = form.elements[i];
+                if (element.type === "checkbox") {
+                    if (element.checked) {
+                        checkedItems.push(element.value);
+                    } else {
+                        uncheckedItems.push(element.value);
+                    }
+                }
+            }
+
+            checkedItems.forEach(item => {
+                const li = document.createElement("li");
+                li.textContent = item;
+                li.classList.add("list-group-item");
+                li.classList.add("checked");
+                checkedList.appendChild(li);
+            });
+
+            uncheckedItems.forEach(item => {
+                const li = document.createElement("li");
+                li.textContent = item;
+                li.classList.add("list-group-item");
+                li.classList.add("unchecked");
+                uncheckedList.appendChild(li);
+            });
+        }
+
+        function copyResults() {
+            const checkedList = document.getElementById("checkedList");
+            const uncheckedList = document.getElementById("uncheckedList");
+            let textToCopy = "当てはまっているもの:\n";
+
+            if (checkedList.children.length === 0) {
+                textToCopy += "なし\n";
+            } else {
+                for (let i = 0; i < checkedList.children.length; i++) {
+                    textToCopy += checkedList.children[i].textContent + "\n";
+                }
+            }
+
+            textToCopy += "\n当てはまっていないもの:\n";
+
+            if (uncheckedList.children.length === 0) {
+                textToCopy += "なし\n";
+            } else {
+                for (let i = 0; i < uncheckedList.children.length; i++) {
+                    textToCopy += uncheckedList.children[i].textContent + "\n";
+                }
+            }
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert("結果をコピーしました！");
+            }).catch(err => {
+                console.error('コピーに失敗しました: ', err);
+                alert("コピーに失敗しました。");
+            });
+        }
+    </script>
+</body>
+</html>
